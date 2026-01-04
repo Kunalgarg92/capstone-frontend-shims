@@ -1,0 +1,29 @@
+<div class="auth-container">
+  <h2>Create Customer Account</h2>
+  <p class="info">Only customers can self-register.</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <input type="email" placeholder="Email" formControlName="email" />
+
+    <small *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+      Valid email required
+    </small>
+
+    <input type="password" placeholder="Password" formControlName="password" />
+
+    <small *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+      Minimum 6 characters
+    </small>
+
+    <button type="submit" [disabled]="loading">
+      {{ loading ? 'Registering...' : 'Register' }}
+    </button>
+
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <p class="link">
+      Already have an account?
+      <a routerLink="/auth/login" class="auth-link">Login</a>
+    </p>
+  </form>
+</div>
