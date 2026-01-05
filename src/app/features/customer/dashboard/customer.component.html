@@ -74,7 +74,7 @@
           <tr *ngFor="let p of myPolicies()" (click)="openPolicyDetails(p)" class="clickable-row">
             <td>#POL-{{ p.id }}</td>
             <td>
-              <strong>{{ p.planName || 'Standard Plan' }}</strong>
+              <strong>{{ p.plan?.name | uppercase }}</strong>
             </td>
             <td>{{ p.startDate | date }}</td>
             <td><span class="status-pill status-active">Active</span></td>
@@ -137,14 +137,31 @@
             <td>{{ p.dueDate | date }}</td>
             <td>₹{{ p.amount | number }}</td>
             <td>
-              <span class="status-pill" [class.active]="p.status === 'DUE'">
+              <span
+                class="status-pill"
+                [ngClass]="{
+                  'status-active': p.status === 'SUCCESS',
+                  'status-pending': p.status === 'PENDING',
+                  'status-failed': p.status === 'FAILED',
+                  'status-due': p.status === 'DUE'
+                }"
+              >
                 {{ p.status }}
               </span>
             </td>
+
             <td>
-              <button *ngIf="p.status === 'DUE'" class="btn-pay" (click)="payPremium(p)">
+              <button
+                *ngIf="p.status === 'DUE' || p.status === 'FAILED'"
+                class="btn-pay"
+                (click)="payPremium(p)"
+              >
                 Pay Now
               </button>
+
+              <span *ngIf="p.status === 'SUCCESS'" class="paid-text"> ✔ Paid </span>
+
+              <span *ngIf="p.status === 'PENDING'" class="pending-text"> ⏳ Pending </span>
             </td>
           </tr>
         </tbody>

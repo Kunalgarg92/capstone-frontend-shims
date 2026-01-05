@@ -60,12 +60,13 @@ export class CustomerDashboardComponent implements OnInit {
   }
 
   generatePremiumSchedule(policy: any) {
-    const schedule = [];
+    const schedule: any[] = [];
 
     const startDate = new Date(policy.startDate);
     const years = policy.plan.durationYears;
     const premium = policy.plan.premiumAmount;
 
+    // 1️⃣ Generate base schedule
     for (let i = 0; i < years; i++) {
       const dueDate = new Date(startDate);
       dueDate.setFullYear(startDate.getFullYear() + i);
@@ -74,17 +75,32 @@ export class CustomerDashboardComponent implements OnInit {
         year: i + 1,
         amount: premium,
         dueDate: dueDate.toISOString().split('T')[0],
-        status: i === 0 ? 'DUE' : 'UPCOMING',
+        status: 'DUE',
       });
     }
 
+    // Show immediately
     this.premiumSchedule.set(schedule);
-  }
+    this.service.getPaymentsForPolicy(policy.id, this.userId).subscribe({
+      next: (payments) => {
+        if (!payments || payments.length === 0) return;
 
-  payPremium(premium: any) {
-    alert(`Mock Payment\n\nAmount: ₹${premium.amount}\nDue Date: ${premium.dueDate}`);
+        const hasSuccess = payments.some((p: any) => p.status === 'SUCCESS');
 
-    premium.status = 'PAID';
+        const hasPending = payments.some((p: any) => p.status === 'CREATED');
+
+        if (hasSuccess) {
+          schedule[0].status = 'SUCCESS';
+        } else if (hasPending) {
+          schedule[0].status = 'PENDING';
+        }
+
+        this.premiumSchedule.set([...schedule]);
+      },
+      error: () => {
+        this.premiumSchedule.set([...schedule]);
+      },
+    });
   }
 
   openPolicyDetails(policy: any) {
@@ -115,6 +131,99 @@ export class CustomerDashboardComponent implements OnInit {
 
   loadUserClaims() {
     this.service.getUserClaims(this.userId).subscribe((res) => this.myClaims.set(res));
+  }
+
+  payPremium(premium: any) {
+    const policy = this.selectedPolicy();
+
+    if (!policy) {
+      alert('Policy not selected');
+      return;
+    }
+
+    // 1️⃣ Create order from backend
+    this.service
+      .createPaymentOrder({
+        policyId: policy.id,
+        userId: this.userId,
+        amount: premium.amount,
+      })
+      .subscribe({
+        next: (res) => {
+          this.openRazorpay(res, premium);
+        },
+        error: () => {
+          alert('Unable to initiate payment. Please try again.');
+        },
+      });
+  }
+
+  openRazorpay(order: any, premium: any) {
+    const options = {
+      key: order.key,
+      amount: order.amount * 100,
+      currency: 'INR',
+      name: 'Health Insurance',
+      description: 'Annual Premium Payment',
+      order_id: order.orderId,
+
+      handler: (response: any) => {
+        this.verifyPayment(response, premium);
+      },
+
+      modal: {
+        ondismiss: () => {
+          alert('Payment cancelled');
+        },
+      },
+
+      prefill: {
+        name: 'Policy Holder',
+        email: 'test@example.com',
+      },
+
+      theme: {
+        color: '#2563eb',
+      },
+    };
+
+    const rzp = new (window as any).Razorpay(options);
+    rzp.open();
+  }
+
+  verifyPayment(response: any, premium: any) {
+    this.service
+      .verifyPayment({
+        razorpayOrderId: response.razorpay_order_id,
+        razorpayPaymentId: response.razorpay_payment_id,
+        razorpaySignature: response.razorpay_signature,
+      })
+      .subscribe({
+        next: () => {
+          // ✅ DO NOT use 'PAID'
+          premium.status = 'SUCCESS';
+
+          alert('Payment successful');
+
+          // ✅ VERY IMPORTANT: Re-sync from backend
+          const policy = this.selectedPolicy();
+          if (policy) {
+            this.generatePremiumSchedule(policy);
+          }
+        },
+        error: () => {
+          // CREATED = pending verification
+          premium.status = 'PENDING';
+
+          alert('Payment received but verification is pending. Please wait or contact support.');
+
+          // still refresh (backend may already have CREATED)
+          const policy = this.selectedPolicy();
+          if (policy) {
+            this.generatePremiumSchedule(policy);
+          }
+        },
+      });
   }
 
   onEnroll(planId: number) {
