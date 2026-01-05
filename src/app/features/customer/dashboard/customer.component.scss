@@ -1,0 +1,237 @@
+/* customer-dashboard.component.scss */
+.customer-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  font-family: 'Inter', sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1e293b;
+  color: white;
+  padding: 30px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  h1 {
+    margin: 0;
+    font-size: 1.8rem;
+  }
+  p {
+    margin: 5px 0 0;
+    opacity: 0.8;
+  }
+}
+
+.tab-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #e2e8f0;
+  button {
+    padding: 12px 24px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: #64748b;
+    transition: 0.3s;
+    &.active {
+      color: #3b82f6;
+      border-bottom: 3px solid #3b82f6;
+    }
+  }
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.plan-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  transition: transform 0.2s;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+  }
+  .plan-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    h3 {
+      margin: 0;
+      color: #1e293b;
+    }
+    .duration {
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
+  }
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    .label {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+    .value {
+      font-weight: 700;
+      &.premium {
+        color: #3b82f6;
+      }
+    }
+  }
+}
+.btn-enrolled {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #10b981;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0.9;
+}
+
+.btn-enroll {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #2563eb;
+  }
+}
+
+.pro-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  th,
+  td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  th {
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 0.85rem;
+  }
+}
+
+.status-pill.active {
+  background: #dcfce7;
+  color: #166534;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.claims-history {
+  .claim-record {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e2e8f0;
+  }
+}
+
+.status-badge {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  &.pending {
+    background: #fef9c3;
+    color: #854d0e;
+  }
+  &.approved {
+    background: #dcfce7;
+    color: #166534;
+  }
+  &.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+}
+
+.form-card {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    .full {
+      grid-column: span 2;
+    }
+  }
+  input,
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    margin-top: 5px;
+  }
+  .form-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+  }
+}
+
+.btn-submit {
+  flex: 2;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.btn-cancel {
+  flex: 1;
+  background: #f1f5f9;
+  color: #475569;
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+}

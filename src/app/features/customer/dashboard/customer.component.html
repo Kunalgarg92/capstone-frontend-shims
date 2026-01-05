@@ -1,0 +1,150 @@
+<!-- customer-dashboard.component.html -->
+<div class="customer-container">
+  <!-- Professional Header -->
+  <header class="dashboard-header">
+    <div class="welcome">
+      <h1>User Dashboard</h1>
+      <p>Manage your health security and claims from one central hub.</p>
+    </div>
+    <div class="user-badge" *ngIf="userId > 0">
+      <span class="avatar">👤</span>
+      <span>User ID: #{{ formattedUserId }}</span>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="tab-nav">
+    <button [class.active]="activeTab() === 'plans'" (click)="activeTab.set('plans')">
+      Explore Plans
+    </button>
+    <button [class.active]="activeTab() === 'policies'" (click)="activeTab.set('policies')">
+      My Active Policies
+    </button>
+    <button [class.active]="activeTab() === 'claims'" (click)="activeTab.set('claims')">
+      Claims History
+    </button>
+  </nav>
+
+  <main class="content-area">
+    <div *ngIf="activeTab() === 'plans'" class="plans-grid">
+      <div *ngFor="let plan of plans()" class="plan-card">
+        <div class="plan-header">
+          <h3>{{ plan.name | uppercase }}</h3>
+          <span class="duration">{{ plan.durationYears }} Years</span>
+        </div>
+        <div class="plan-body">
+          <div class="data-row">
+            <span class="label">Coverage Limit</span>
+            <span class="value">₹{{ plan.coverageLimit | number }}</span>
+          </div>
+          <div class="data-row">
+            <span class="label">Annual Premium</span>
+            <span class="value premium">₹{{ plan.premiumAmount | number }}</span>
+          </div>
+        </div>
+
+        <ng-container *ngIf="isEnrolled(plan.id); else enrollBtn">
+          <button class="btn-enrolled" disabled><span class="icon">✅</span> Active Policy</button>
+        </ng-container>
+
+        <ng-template #enrollBtn>
+          <button class="btn-enroll" (click)="onEnroll(plan.id)">Enroll Now</button>
+        </ng-template>
+      </div>
+    </div>
+    <!-- FIXED: Added this closing div for plans-grid -->
+
+    <!-- SECTION 2: MY POLICIES -->
+    <div *ngIf="activeTab() === 'policies'" class="policy-section">
+      <div *ngIf="myPolicies().length === 0" class="empty-state">
+        No active policies found. Explore plans to get started.
+      </div>
+
+      <table *ngIf="myPolicies().length > 0" class="pro-table">
+        <thead>
+          <tr>
+            <th>Policy ID</th>
+            <th>Plan Name</th>
+            <th>Effective Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of myPolicies()">
+            <td>#POL-{{ p.id }}</td>
+            <td>
+              <strong>{{ p.planName || 'Standard Plan' }}</strong>
+            </td>
+            <td>{{ p.startDate | date }}</td>
+            <td><span class="status-pill active">Active</span></td>
+            <td>
+              <button class="btn-claim" (click)="openClaimForm(p)">File New Claim</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SECTION 3: CLAIM FORM -->
+    <div *ngIf="activeTab() === 'claim_form'" class="form-container">
+      <div class="form-card">
+        <h2>Submit Reimbursement Claim</h2>
+        <p class="subtitle">Policy: #POL-{{ selectedPolicyForClaim?.id }}</p>
+
+        <form (submit)="submitClaim($event)" enctype="multipart/form-data">
+          <div class="form-grid">
+            <div class="input-group">
+              <label>Patient Name</label>
+              <input type="text" name="patientName" required placeholder="Full Name" />
+            </div>
+            <div class="input-group">
+              <label>Treatment Cost (₹)</label>
+              <input type="number" name="treatmentCost" required />
+            </div>
+            <div class="input-group full">
+              <label>Hospital Name</label>
+              <input type="text" name="hospitalName" required />
+            </div>
+            <div class="input-group full">
+              <label>Hospital Address</label>
+              <textarea name="hospitalAddress" rows="2" required></textarea>
+            </div>
+            <div class="input-group full">
+              <label>Upload Medical Documents (Bills, Prescriptions)</label>
+              <input
+                type="file"
+                multiple
+                name="documents"
+                (change)="onFileSelected($event, null)"
+                required
+              />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="activeTab.set('policies')">
+              Cancel
+            </button>
+            <button type="submit" class="btn-submit">Submit Claim to Officer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- SECTION 4: MY CLAIMS -->
+    <div *ngIf="activeTab() === 'claims'" class="claims-history">
+      <div *ngFor="let c of myClaims()" class="claim-record">
+        <div class="claim-info">
+          <h4>{{ c.hospitalName }}</h4>
+          <p>Patient: {{ c.patientName }} | Treatment Cost: ₹{{ c.treatmentCost | number }}</p>
+          <small>Submitted on: {{ c.createdAt | date }}</small>
+        </div>
+        <div class="claim-status">
+          <span class="status-badge" [ngClass]="c.status?.toLowerCase() || 'pending'">
+            {{ c.status || 'Under Review' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
