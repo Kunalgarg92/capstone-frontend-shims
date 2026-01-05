@@ -200,24 +200,17 @@ export class CustomerDashboardComponent implements OnInit {
       })
       .subscribe({
         next: () => {
-          // ✅ DO NOT use 'PAID'
           premium.status = 'SUCCESS';
-
           alert('Payment successful');
-
-          // ✅ VERY IMPORTANT: Re-sync from backend
           const policy = this.selectedPolicy();
           if (policy) {
             this.generatePremiumSchedule(policy);
           }
         },
         error: () => {
-          // CREATED = pending verification
           premium.status = 'PENDING';
 
           alert('Payment received but verification is pending. Please wait or contact support.');
-
-          // still refresh (backend may already have CREATED)
           const policy = this.selectedPolicy();
           if (policy) {
             this.generatePremiumSchedule(policy);

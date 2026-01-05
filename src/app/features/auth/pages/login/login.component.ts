@@ -22,6 +22,15 @@ export class LoginComponent {
       password: ['', Validators.required],
     });
   }
+
+  ngOnInit() {
+    this.form.valueChanges.subscribe(() => {
+      if (this.errorMessage) {
+        this.errorMessage = '';
+      }
+    });
+  }
+
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

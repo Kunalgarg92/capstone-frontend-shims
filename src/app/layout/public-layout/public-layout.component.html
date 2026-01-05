@@ -1,7 +1,28 @@
 <div class="layout">
   <app-header></app-header>
+
   <main class="content">
-    <router-outlet></router-outlet>
+    <section class="auth-page">
+      <div class="auth-illustration">
+        <h1>Secure your future with <span>SecureInsure</span></h1>
+        <p>
+          Manage policies, track claims, and access all your insurance details from a single, secure
+          dashboard.
+        </p>
+
+        <ul>
+          <li>Fast, secure policy access</li>
+          <li>View and download documents anytime</li>
+          <li>24/7 availability on any device</li>
+        </ul>
+      </div>
+
+      <div class="auth-panel">
+        <!-- Login/Register will render here -->
+        <router-outlet></router-outlet>
+      </div>
+    </section>
   </main>
+
   <app-footer></app-footer>
 </div>
