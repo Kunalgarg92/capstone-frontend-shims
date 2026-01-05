@@ -14,10 +14,13 @@ import { CustomerService } from '../services/customer.service';
 export class CustomerDashboardComponent implements OnInit {
   private service = inject(CustomerService);
 
-  activeTab = signal<'plans' | 'policies' | 'claims' | 'claim_form'>('plans');
+  // activeTab = signal<'plans' | 'policies' | 'claims' | 'claim_form'>('plans');
+  activeTab = signal<'plans' | 'policies' | 'policy_details' | 'claims' | 'claim_form'>('plans');
   plans = signal<any[]>([]);
   myPolicies = signal<any[]>([]);
   myClaims = signal<any[]>([]);
+  selectedPolicy = signal<any | null>(null);
+  premiumSchedule = signal<any[]>([]);
   selectedPolicyForClaim: any = null;
 
   userId: number = 0;
@@ -54,6 +57,40 @@ export class CustomerDashboardComponent implements OnInit {
       this.loadUserPolicies();
       this.loadUserClaims();
     }
+  }
+
+  generatePremiumSchedule(policy: any) {
+    const schedule = [];
+
+    const startDate = new Date(policy.startDate);
+    const years = policy.plan.durationYears;
+    const premium = policy.plan.premiumAmount;
+
+    for (let i = 0; i < years; i++) {
+      const dueDate = new Date(startDate);
+      dueDate.setFullYear(startDate.getFullYear() + i);
+
+      schedule.push({
+        year: i + 1,
+        amount: premium,
+        dueDate: dueDate.toISOString().split('T')[0],
+        status: i === 0 ? 'DUE' : 'UPCOMING',
+      });
+    }
+
+    this.premiumSchedule.set(schedule);
+  }
+
+  payPremium(premium: any) {
+    alert(`Mock Payment\n\nAmount: ₹${premium.amount}\nDue Date: ${premium.dueDate}`);
+
+    premium.status = 'PAID';
+  }
+
+  openPolicyDetails(policy: any) {
+    this.selectedPolicy.set(policy);
+    this.generatePremiumSchedule(policy);
+    this.activeTab.set('policy_details');
   }
 
   loadPlans() {

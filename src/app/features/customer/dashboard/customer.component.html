@@ -71,19 +71,96 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let p of myPolicies()">
+          <tr *ngFor="let p of myPolicies()" (click)="openPolicyDetails(p)" class="clickable-row">
             <td>#POL-{{ p.id }}</td>
             <td>
               <strong>{{ p.planName || 'Standard Plan' }}</strong>
             </td>
             <td>{{ p.startDate | date }}</td>
-            <td><span class="status-pill active">Active</span></td>
+            <td><span class="status-pill status-active">Active</span></td>
             <td>
               <button class="btn-claim" (click)="openClaimForm(p)">File New Claim</button>
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- POLICY DETAILS VIEW -->
+    <div *ngIf="activeTab() === 'policy_details'" class="policy-details">
+      <div class="details-header">
+        <h2>{{ selectedPolicy()?.plan?.name | uppercase }}</h2>
+
+        <span class="status-pill status-active">
+          {{ selectedPolicy()?.status }}
+        </span>
+      </div>
+
+      <div class="details-grid">
+        <div>
+          <label>Policy ID</label>
+          <p>#POL-{{ selectedPolicy()?.id }}</p>
+        </div>
+
+        <div>
+          <label>Coverage Limit</label>
+          <p>₹{{ selectedPolicy()?.plan?.coverageLimit | number }}</p>
+        </div>
+
+        <div>
+          <label>Start Date</label>
+          <p>{{ selectedPolicy()?.startDate | date }}</p>
+        </div>
+
+        <div>
+          <label>End Date</label>
+          <p>{{ selectedPolicy()?.endDate | date }}</p>
+        </div>
+      </div>
+
+      <!-- PREMIUM SCHEDULE -->
+      <h3>Annual Premium Schedule</h3>
+      <table class="pro-table">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Due Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let p of premiumSchedule()">
+            <td>Year {{ p.year }}</td>
+            <td>{{ p.dueDate | date }}</td>
+            <td>₹{{ p.amount | number }}</td>
+            <td>
+              <span class="status-pill" [class.active]="p.status === 'DUE'">
+                {{ p.status }}
+              </span>
+            </td>
+            <td>
+              <button *ngIf="p.status === 'DUE'" class="btn-pay" (click)="payPremium(p)">
+                Pay Now
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- TERMS & CONDITIONS -->
+      <h3>Terms & Conditions</h3>
+      <ul class="terms">
+        <li>Coverage applies only to network hospitals.</li>
+        <li>Claims must be filed within 30 days of treatment.</li>
+        <li>Pre-existing conditions covered after waiting period.</li>
+        <li>Annual premium must be paid on or before due date.</li>
+        <li>Policy renewal depends on premium clearance.</li>
+      </ul>
+
+      <button class="btn-back" (click)="activeTab.set('policies')">← Back to Policies</button>
     </div>
 
     <!-- SECTION 3: CLAIM FORM -->
