@@ -1,0 +1,14 @@
+/* Ensure the page takes up the full height */
+.admin-content {
+  background-color: #f8fafc; /* Light gray background for the dashboard */
+  min-height: calc(100vh - 140px); /* Adjust based on header/footer height */
+}
+
+.admin-footer {
+  background-color: white;
+  padding: 1rem;
+  text-align: center;
+  border-top: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 0.875rem;
+}

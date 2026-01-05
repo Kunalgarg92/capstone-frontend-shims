@@ -1,0 +1,17 @@
+<header class="claims-header">
+  <div class="left">
+    <span class="logo">SecureInsure</span>
+    <span class="role">Claims Officer</span>
+  </div>
+  <nav class="nav-links">
+    <a
+      routerLink="/claims-officer"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >Dashboard</a
+    >
+  </nav>
+  <div class="right">
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+</header>

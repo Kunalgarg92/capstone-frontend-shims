@@ -1,0 +1,16 @@
+<header class="agent-header">
+  <div class="left">
+    <span class="logo">SecureInsure</span>
+    <span class="role">Agent Panel</span>
+  </div>
+
+  <nav class="nav-links">
+    <a routerLink="/agent" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Dashboard
+    </a>
+  </nav>
+
+  <div class="right">
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+</header>

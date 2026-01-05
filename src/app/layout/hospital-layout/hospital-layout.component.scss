@@ -1,0 +1,30 @@
+.hospital-content {
+  background-color: #f1f5f9; // Slightly different gray for hospital
+  min-height: calc(100vh - 135px); // Adjust for header/footer
+  padding: 20px;
+}
+
+.hospital-footer {
+  background-color: white;
+  padding: 1.2rem 2.5rem;
+  border-top: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 0.8rem;
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    .separator {
+      color: #cbd5e1;
+    }
+  }
+}

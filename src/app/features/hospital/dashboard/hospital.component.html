@@ -1,0 +1,154 @@
+<div class="hospital-container">
+  <div *ngIf="message.text" class="alert" [ngClass]="message.type">{{ message.text }}</div>
+
+  <div class="header-section">
+    <h1>Hospital Claims Portal</h1>
+    <p>Manage patient submissions and track claim statuses.</p>
+  </div>
+
+  <div class="workflow-grid">
+    <!-- Step 1: Patient List -->
+    <div class="card patient-sidebar">
+      <div class="card-header"><h3>1. Select Patient</h3></div>
+      <div class="scroll-list">
+        <div
+          *ngFor="let u of customers()"
+          class="list-item"
+          [class.active]="selectedUser?.id === u.id"
+          (click)="selectUser(u)"
+        >
+          <strong>{{ u.email }}</strong>
+          <small>User ID: {{ u.id }}</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Policy Selection -->
+    <div class="card policy-area" *ngIf="selectedUser">
+      <div class="card-header"><h3>2. Select Active Policy</h3></div>
+      <div class="policy-list" *ngIf="activePolicies().length > 0; else noActive">
+        <div
+          *ngFor="let p of activePolicies()"
+          class="policy-card"
+          [class.selected]="selectedPolicy?.id === p.id"
+          (click)="initiateClaim(p)"
+        >
+          <div class="badge">ACTIVE</div>
+          <h4>{{ p.plan.name }}</h4>
+          <p>Coverage: ₹{{ p.plan.coverageLimit | number }}</p>
+          <button class="btn-select">File Claim &rsaquo;</button>
+        </div>
+      </div>
+      <ng-template #noActive
+        ><p class="msg">No active policies found for this user.</p></ng-template
+      >
+    </div>
+
+    <!-- Inside the claim-form-card div -->
+    <div class="card claim-form-card" *ngIf="selectedPolicy">
+      <div class="card-header"><h3>3. Claim Details & Documentation</h3></div>
+      <form [formGroup]="claimForm" (ngSubmit)="submitClaim()" class="p-20">
+        <div class="form-group">
+          <label>Patient Name</label>
+          <input formControlName="patientName" placeholder="Full name as per ID" />
+        </div>
+
+        <div class="form-group">
+          <label>Treatment Cost (₹)</label>
+          <input
+            type="number"
+            formControlName="treatmentCost"
+            placeholder="Enter total bill amount"
+          />
+        </div>
+
+        <!-- Professional File Upload -->
+        <div class="file-upload-section">
+          <label class="file-label">
+            <span>📎 Upload Treatment Bills (PDF Only)</span>
+            <input
+              type="file"
+              (change)="onFileSelected($event)"
+              accept="application/pdf"
+              multiple
+              hidden
+              #fileInput
+            />
+            <button type="button" class="btn-browse" (click)="fileInput.click()">
+              Browse Files
+            </button>
+          </label>
+
+          <div class="selected-files" *ngIf="selectedFiles.length > 0">
+            <div *ngFor="let file of selectedFiles; let i = index" class="file-chip">
+              <span class="file-name">📄 {{ file.name }}</span>
+              <button type="button" class="btn-remove" (click)="removeFile(i)">&times;</button>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="claimForm.invalid || selectedFiles.length === 0"
+        >
+          Submit Official Claim
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="card history-card">
+    <div class="card-header d-flex-between">
+      <h3>Recent Hospital Submissions</h3>
+      <button class="btn-refresh" (click)="loadClaims()">Refresh Data 🔄</button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="claims-table">
+        <thead>
+          <tr>
+            <th>Claim ID</th>
+            <th>Policy</th>
+            <th>Patient/Treatment</th>
+            <th>Cost</th>
+            <th>Network</th>
+            <th>Status</th>
+            <th>Date Submitted</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let claim of hospitalClaims()">
+            <td>
+              <span class="id-badge">#{{ claim.id }}</span>
+            </td>
+            <td>Policy #{{ claim.policyId }}</td>
+            <td>
+              <div class="patient-cell">
+                <span class="p-name">{{ claim.patientName || 'N/A' }}</span>
+                <small class="h-name">{{ claim.hospitalName }}</small>
+              </div>
+            </td>
+            <td>
+              <strong>₹{{ claim.treatmentCost | number }}</strong>
+            </td>
+            <td>
+              <span class="network-tag" [class.in]="claim.inNetwork">
+                {{ claim.inNetwork ? 'In-Network' : 'Out-of-Network' }}
+              </span>
+            </td>
+            <td>
+              <span class="status-pill" [ngClass]="getStatusClass(claim.status)">
+                {{ claim.status }}
+              </span>
+            </td>
+            <td>{{ claim.createdAt | date : 'medium' }}</td>
+          </tr>
+
+          <tr *ngIf="hospitalClaims().length === 0">
+            <td colspan="7" class="empty-msg">No claims submitted by this hospital yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,124 @@
+<div class="admin-container">
+  <!-- Tabs -->
+  <div class="admin-tabs">
+    <button [class.active]="activeTab === 'USERS'" (click)="activeTab = 'USERS'">Users</button>
+    <button [class.active]="activeTab === 'PLANS'" (click)="activeTab = 'PLANS'">Plans</button>
+  </div>
+
+  <!-- USERS SECTION -->
+  <div *ngIf="activeTab === 'USERS'" class="card">
+    <div class="card-header">
+      <h2>User Management</h2>
+      <button class="primary" (click)="openUserForm()">+ Create User</button>
+    </div>
+
+    <!-- User Form -->
+    <form *ngIf="showUserForm" [formGroup]="createUserForm" class="form-card">
+      <h3>{{ isEditMode ? 'Update User' : 'Create New User' }}</h3>
+      <input placeholder="Email" formControlName="email" [readOnly]="isEditMode" />
+      <input
+        *ngIf="!isEditMode"
+        placeholder="Password"
+        type="password"
+        formControlName="password"
+      />
+
+      <div class="form-group">
+        <label>Role:</label>
+        <select formControlName="role">
+          <option>CUSTOMER</option>
+          <option>ADMIN</option>
+          <option>INSURANCE_AGENT</option>
+          <option>HOSPITAL</option>
+          <option>CLAIMS_OFFICER</option>
+        </select>
+      </div>
+
+      <div *ngIf="isEditMode" class="form-group checkbox">
+        <input type="checkbox" formControlName="active" id="active" />
+        <label for="active">Is Active</label>
+      </div>
+
+      <div class="form-actions">
+        <button class="primary" type="button" (click)="saveUser()">
+          {{ isEditMode ? 'Update' : 'Create' }}
+        </button>
+        <button class="secondary" type="button" (click)="showUserForm = false">Cancel</button>
+      </div>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of users">
+          <td>{{ u.email }}</td>
+          <td>{{ u.role }}</td>
+          <td>
+            <span class="badge" [class.active]="u.active">{{
+              u.active ? 'Active' : 'Inactive'
+            }}</span>
+          </td>
+          <td class="action-btns">
+            <button class="edit-btn" (click)="openUserForm(u)">Edit</button>
+            <button class="danger" (click)="deleteUser(u.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PLANS SECTION -->
+  <div *ngIf="activeTab === 'PLANS'" class="card">
+    <div class="card-header">
+      <h2>Plan Management</h2>
+      <button class="primary" (click)="openPlanForm()">+ Create Plan</button>
+    </div>
+
+    <!-- Plan Form -->
+    <form *ngIf="showPlanForm" [formGroup]="createPlanForm" class="form-card">
+      <h3>{{ isEditMode ? 'Update Plan' : 'Create New Plan' }}</h3>
+      <input placeholder="Plan Name" formControlName="name" />
+      <input placeholder="Coverage Limit" type="number" formControlName="coverageLimit" />
+      <input placeholder="Premium Amount" type="number" formControlName="premiumAmount" />
+      <input placeholder="Duration (Years)" type="number" formControlName="durationYears" />
+
+      <div class="form-actions">
+        <button class="primary" type="button" (click)="savePlan()">
+          {{ isEditMode ? 'Update' : 'Create' }}
+        </button>
+        <button class="secondary" type="button" (click)="showPlanForm = false">Cancel</button>
+      </div>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Premium</th>
+          <th>Coverage</th>
+          <th>Duration</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of plans">
+          <td>{{ p.name }}</td>
+          <td>{{ p.premiumAmount | currency : 'INR' }}</td>
+          <td>{{ p.coverageLimit | currency : 'INR' }}</td>
+          <td>{{ p.durationYears }} yrs</td>
+          <td class="action-btns">
+            <button class="edit-btn" (click)="openPlanForm(p)">Edit</button>
+            <button class="danger" (click)="deletePlan(p.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

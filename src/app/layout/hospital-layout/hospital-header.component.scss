@@ -1,0 +1,89 @@
+.hospital-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 2.5rem;
+  background-color: #0f172a; // Deep Navy
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  .left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    .logo {
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: #22d3ee; // Cyan medical accent
+      letter-spacing: -0.5px;
+    }
+    .role {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: #1e293b;
+      color: #94a3b8;
+      padding: 3px 10px;
+      border-radius: 4px;
+      border: 1px solid #334155;
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 25px;
+    a {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 5px 0;
+
+      &.active,
+      &:hover {
+        color: #22d3ee;
+      }
+
+      &.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: #22d3ee;
+      }
+    }
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .hospital-name {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      padding-right: 20px;
+      border-right: 1px solid #334155;
+    }
+  }
+
+  .logout-btn {
+    background: transparent;
+    color: #f87171;
+    border: 1px solid #7f1d1d;
+    padding: 6px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: 0.2s;
+    &:hover {
+      background: #7f1d1d;
+      color: white;
+    }
+  }
+}

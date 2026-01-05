@@ -1,0 +1,93 @@
+<div class="agent-container">
+  <div *ngIf="message.text" class="alert" [ngClass]="message.type">{{ message.text }}</div>
+
+  <div class="dashboard-layout">
+    <!-- 1. Left: Customer Selection -->
+    <div class="sidebar card">
+      <div class="card-header"><h3>Select Customer</h3></div>
+      <div class="user-list">
+        <!-- Use the signal with brackets () -->
+        <div
+          *ngFor="let c of customers()"
+          class="user-item"
+          [class.active]="selectedCustomer?.id === c.id"
+          (click)="selectCustomer(c)"
+        >
+          <strong>{{ c.email }}</strong>
+          <small>ID: {{ c.id }}</small>
+        </div>
+      </div>
+
+      <!-- For count, use brackets too -->
+      <span>{{ customers().length }} Active Customers</span>
+    </div>
+
+    <!-- 2. Right: Action Area -->
+    <div class="main-content" *ngIf="selectedCustomer">
+      <!-- Existing Policies Section -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Active Policies for {{ selectedCustomer.email }}</h2>
+        </div>
+
+        <div class="policy-grid" *ngIf="userPolicies.length > 0; else noPolicies">
+          <div
+            *ngFor="let pol of userPolicies"
+            class="policy-card shadow"
+            [ngClass]="pol.status.toLowerCase()"
+          >
+            <div class="pol-badge">{{ pol.status }}</div>
+            <h3>{{ pol.plan.name }}</h3>
+            <div class="dates">
+              <span><strong>Start:</strong> {{ pol.startDate }}</span>
+              <span><strong>End:</strong> {{ pol.endDate }}</span>
+            </div>
+            <div class="pol-actions">
+              <!-- Show Suspend only for ACTIVE -->
+              <button *ngIf="pol.status === 'ACTIVE'" class="btn-suspend" (click)="suspend(pol)">
+                Suspend
+              </button>
+
+              <!-- Show Renew ONLY for EXPIRED (Based on your backend error) -->
+              <button *ngIf="pol.status === 'EXPIRED'" class="btn-renew" (click)="renew(pol)">
+                Renew Now
+              </button>
+
+              <!-- If it's SUSPENDED, show a warning or a different action -->
+              <span *ngIf="pol.status === 'SUSPENDED'" class="status-note">
+                Cannot renew while suspended.
+              </span>
+            </div>
+          </div>
+        </div>
+        <ng-template #noPolicies
+          ><p class="empty-msg">No policies found for this user.</p></ng-template
+        >
+      </section>
+
+      <!-- Available Plans Section -->
+      <section class="section">
+        <div class="section-header"><h2>Available Plans</h2></div>
+        <div class="plan-grid">
+          <div *ngFor="let p of plans" class="plan-card">
+            <h3>{{ p.name }}</h3>
+            <p>Coverage: ₹{{ p.coverageLimit | number }}</p>
+            <p>Premium: ₹{{ p.premiumAmount | number }}</p>
+
+            <button *ngIf="!isAlreadyEnrolled(p.id)" class="btn-enroll" (click)="enroll(p.id)">
+              Enroll Customer
+            </button>
+            <button *ngIf="isAlreadyEnrolled(p.id)" class="btn-disabled" disabled>
+              Already Enrolled
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Placeholder -->
+    <div class="placeholder card" *ngIf="!selectedCustomer">
+      <p>Please select a customer to manage their insurance.</p>
+    </div>
+  </div>
+</div>

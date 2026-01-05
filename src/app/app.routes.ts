@@ -1,5 +1,9 @@
 import { Routes } from '@angular/router';
 import { roleGuard } from './core/guards/role.guard';
+import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
+import { AgentLayoutComponent } from './layout/agent-layout/agent-layout.component';
+import { HospitalLayoutComponent } from './layout/hospital-layout/hospital-layout.component';
+import { ClaimsOfficerLayoutComponent } from './layout/claim-officer-layout/claims-officer-layout.component';
 
 export const routes: Routes = [
   {
@@ -8,6 +12,9 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    component: AdminLayoutComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['ADMIN'] },
     loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
   {
@@ -17,15 +24,24 @@ export const routes: Routes = [
   },
   {
     path: 'agent',
+    component: AgentLayoutComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['INSURANCE_AGENT'] },
     loadChildren: () => import('./features/agent/agent.routes').then((m) => m.AGENT_ROUTES),
   },
   {
     path: 'hospital',
+    component: HospitalLayoutComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['HOSPITAL'] },
     loadChildren: () =>
       import('./features/hospital/hospital.routes').then((m) => m.HOSPITAL_ROUTES),
   },
   {
     path: 'claims-officer',
+    component: ClaimsOfficerLayoutComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['CLAIMS_OFFICER'] },
     loadChildren: () =>
       import('./features/claims-officer/claims-officer.routes').then((m) => m.CLAIMS_ROUTES),
   },

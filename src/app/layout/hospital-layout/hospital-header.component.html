@@ -1,0 +1,20 @@
+<header class="hospital-header">
+  <div class="left">
+    <span class="logo">SecureInsure</span>
+    <span class="role">Hospital Portal</span>
+  </div>
+
+  <nav class="nav-links">
+    <a routerLink="/hospital" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Claim Dashboard
+    </a>
+    <a href="/hospital#history" class="nav-item"> Submission History </a>
+  </nav>
+
+  <div class="right">
+    <div class="user-info">
+      <span class="hospital-name">Empanelled Partner</span>
+    </div>
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+</header>

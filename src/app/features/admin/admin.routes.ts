@@ -1,12 +1,13 @@
 import { Routes } from '@angular/router';
-import { AdminDashboardComponent } from './admin.component';
-import { roleGuard } from '../../core/guards/role.guard';
+import { AdminDashboardComponent } from './dashboard/admin.component';
 
 export const ADMIN_ROUTES: Routes = [
   {
     path: '',
-    component: AdminDashboardComponent,
-    canActivate: [roleGuard],
-    data: { roles: ['ADMIN'] },
+    children: [
+      { path: '', component: AdminDashboardComponent },
+      { path: 'users', component: AdminDashboardComponent },
+      { path: 'plans', component: AdminDashboardComponent },
+    ],
   },
 ];

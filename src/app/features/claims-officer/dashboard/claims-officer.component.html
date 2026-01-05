@@ -1,0 +1,132 @@
+<!-- claims-officer.component.html -->
+<div class="officer-container">
+  <!-- Top Stats Bar -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="icon pending">⏳</div>
+      <div class="data">
+        <span class="label">Awaiting Review</span>
+        <span class="value">{{ pendingClaims().length }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="icon total">💰</div>
+      <div class="data">
+        <span class="label">Liability Pool</span>
+        <span class="value">₹{{ totalLiability() | number }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-workspace">
+    <!-- Left: Work Queue -->
+    <div class="card queue-sidebar">
+      <div class="card-header">
+        <h3>Inbox / Pending Review</h3>
+      </div>
+      <div class="claim-list">
+        <div
+          *ngFor="let c of pendingClaims()"
+          class="claim-item"
+          [class.active]="selectedClaim?.id === c.id"
+          (click)="selectClaim(c)"
+        >
+          <div class="claim-info">
+            <strong>Claim #{{ c.id }}</strong>
+            <span>{{ c.hospitalName }}</span>
+          </div>
+          <div class="claim-meta">
+            <span class="cost">₹{{ c.treatmentCost | number }}</span>
+            <small>{{ c.createdAt | date : 'shortDate' }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Review Console -->
+    <div class="card review-console">
+      <div *ngIf="selectedClaim; else emptyState" class="console-content">
+        <div class="console-header">
+          <h2>Reviewing Claim #{{ selectedClaim.id }}</h2>
+          <span class="badge" [class.hospital]="selectedClaim.submittedByRole === 'HOSPITAL'">
+            Source: {{ selectedClaim.submittedByRole }}
+          </span>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-box">
+            <label>Patient/Policy Info</label>
+            <p><strong>Patient:</strong> {{ selectedClaim.patientName || 'Policy Holder' }}</p>
+            <p><strong>Policy ID:</strong> {{ selectedClaim.policyId }}</p>
+            <p>
+              <strong>Network:</strong>
+              {{ selectedClaim.inNetwork ? 'In-Network' : 'Out-of-Network' }}
+            </p>
+          </div>
+
+          <div class="detail-box">
+            <label>Supporting Documents</label>
+            <div class="doc-container" *ngIf="selectedClaim.documents?.length > 0; else noDocs">
+              <div *ngFor="let doc of selectedClaim.documents" class="doc-item">
+                📄
+                <a
+                  [href]="'http://localhost:8081/claims-service/api/claims/documents/' + doc"
+                  target="_blank"
+                >
+                  View Attachment
+                </a>
+              </div>
+            </div>
+            <ng-template #noDocs><p>No documents uploaded.</p></ng-template>
+          </div>
+
+          <!-- PAYOUT CALCULATOR SECTION -->
+          <div class="detail-box calculator">
+            <label>Payout Logic (Automated)</label>
+            <div class="calc-row">
+              <span>Treatment Cost:</span>
+              <span>₹{{ selectedClaim.treatmentCost | number }}</span>
+            </div>
+            <div class="calc-row">
+              <span>Policy Coverage:</span>
+              <span class="coverage">₹{{ selectedPolicy?.plan?.coverageLimit | number }}</span>
+            </div>
+            <hr />
+            <div class="calc-row total">
+              <span>Recommended Payout:</span>
+              <span class="payout-val">₹{{ calculatedPayout | number }}</span>
+            </div>
+            <small *ngIf="isOverLimit" class="warning-text">
+              ⚠️ Treatment cost exceeds coverage limit. Payout capped.
+            </small>
+          </div>
+        </div>
+
+        <div class="review-actions">
+          <label>Officer Remarks</label>
+          <textarea
+            [(ngModel)]="remarks"
+            placeholder="Enter reason for approval or rejection..."
+          ></textarea>
+
+          <div class="button-group">
+            <button class="btn-reject" (click)="processAction('reject')" [disabled]="!remarks">
+              Reject Claim
+            </button>
+            <button class="btn-approve" (click)="processAction('approve')" [disabled]="!remarks">
+              Authorize Payout ₹{{ calculatedPayout | number }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #emptyState>
+        <div class="empty-placeholder">
+          <div class="illustration">🔍</div>
+          <h3>Select a claim from the inbox to begin review</h3>
+          <p>The system will automatically calculate the payout based on policy limits.</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
