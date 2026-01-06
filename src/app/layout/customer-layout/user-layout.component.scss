@@ -86,6 +86,9 @@
   background: #f8fafc;
   padding: 24px;
   overflow-y: auto;
+  max-height: 100%; // Add this
+  height: 100%; // Add this
+  margin: 0; // Add this - removes 20px auto margins causing overflow
 }
 
 .customer-footer {

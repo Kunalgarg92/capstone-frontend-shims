@@ -1,8 +1,12 @@
 /* customer-dashboard.component.scss */
 .customer-container {
-  max-width: 1200px;
-  margin: 20px auto;
+  height: 100%;
+  max-height: 100%;
+  margin: 0;
+  padding: 0;
   font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
 .details-header {
@@ -219,6 +223,7 @@
 }
 
 .claims-history {
+  padding-bottom: 0; // Add this
   .claim-record {
     background: white;
     padding: 20px;
@@ -228,6 +233,11 @@
     justify-content: space-between;
     align-items: center;
     border: 1px solid #e2e8f0;
+  }
+
+  .claim-record:last-child {
+    // Add this entire block
+    margin-bottom: 0;
   }
 }
 
