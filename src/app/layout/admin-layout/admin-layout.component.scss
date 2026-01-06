@@ -1,14 +1,130 @@
-/* Ensure the page takes up the full height */
-.admin-content {
-  background-color: #f8fafc; /* Light gray background for the dashboard */
-  min-height: calc(100vh - 140px); /* Adjust based on header/footer height */
+.admin-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: calc(100vh - 64px); // header height approx
+  background: #0f172a;
 }
 
-.admin-footer {
-  background-color: white;
-  padding: 1rem;
+/* Sidebar */
+.admin-sidebar {
+  background: #020617;
+  border-right: 1px solid #1e293b;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: #e5e7eb;
+}
+
+.sidebar-section {
+  padding-bottom: 12px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-user .avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #22c55e, #0ea5e9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #020617;
+}
+
+.sidebar-user .info .name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sidebar-user .info .email {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-nav a .icon {
+  width: 22px;
   text-align: center;
-  border-top: 1px solid #e2e8f0;
-  color: #64748b;
-  font-size: 0.875rem;
+}
+
+.sidebar-nav a.active {
+  background: #0f172a;
+  color: #f9fafb;
+  font-weight: 600;
+}
+
+.sidebar-nav a:hover {
+  background: #020617;
+  color: #f9fafb;
+}
+
+.sidebar-meta {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid #1e293b;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Main content area */
+.admin-main {
+  background: #f8fafc;
+  padding: 20px 24px;
+  min-height: calc(100vh - 64px);
+}
+
+/* Footer */
+.admin-footer {
+  background-color: #0b1120;
+  padding: 0.75rem 1.5rem;
+  text-align: center;
+  border-top: 1px solid #1e293b;
+  color: #9ca3af;
+  font-size: 0.8rem;
+}
+
+/* Existing content container tweaks */
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Responsive: collapse sidebar */
+@media (max-width: 900px) {
+  .admin-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-sidebar {
+    display: none; // simplest: hide on small; optional: later add toggle
+  }
+
+  .admin-main {
+    padding: 16px;
+  }
 }

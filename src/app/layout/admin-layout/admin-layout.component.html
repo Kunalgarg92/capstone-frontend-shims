@@ -1,8 +1,38 @@
 <app-admin-header></app-admin-header>
 
-<main class="admin-content" style="min-height: calc(100vh - 120px); padding: 20px">
-  <router-outlet></router-outlet>
-</main>
+<div class="admin-shell">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-section sidebar-user">
+      <div class="avatar">A</div>
+      <div class="info">
+        <span class="name">Admin</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <span class="icon">🏠</span>
+        <span>Overview</span>
+      </a>
+
+      <a routerLink="/admin/users" routerLinkActive="active">
+        <span class="icon">👥</span>
+        <span>Users</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-section sidebar-meta">
+      <p>SecureInsure Admin</p>
+      <small>v1.0.0</small>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="admin-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>
 
 <footer class="admin-footer">
   <p>&copy; 2026 SecureInsure Admin Portal. All rights reserved.</p>

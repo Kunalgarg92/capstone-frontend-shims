@@ -24,6 +24,80 @@
   }
 }
 
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  max-width: 500px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+}
+
+.admin-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  height: calc(100vh - 64px); /* Full height minus header */
+  background: #0f172a;
+}
+
+.admin-sidebar {
+  /* existing styles - fixed, no scroll needed */
+  background: #020617;
+  border-right: 1px solid #1e293b;
+  padding: 20px 16px;
+  /* ... rest unchanged */
+}
+
+.admin-main {
+  background: #f8fafc;
+  padding: 24px;
+  overflow-y: auto; /* ← Scroll vertically when content overflows */
+  overflow-x: hidden; /* ← No horizontal scroll */
+}
+
+/* Ensure admin-container doesn't exceed main height */
+.admin-container {
+  max-height: 100%; /* ← Limit to parent height */
+  overflow: hidden; /* ← No scroll here, let .admin-main handle it */
+}
+
+/* Card tables get internal scroll if needed */
+.card table {
+  max-height: 500px; /* Optional: limit table height */
+  overflow-y: auto; /* Optional: table scrolls independently */
+  display: block;
+}
+
+.card thead,
+.card tbody,
+.card tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* Prevents column width jumping */
+}
+
 .card {
   background: #ffffff;
   padding: 20px;

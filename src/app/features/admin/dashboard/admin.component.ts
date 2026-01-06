@@ -1,13 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminUserService } from '../services/admin-user.service';
 import { AdminPlanService } from '../services/admin-plan.service';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  FormGroup,
+  FormsModule,
+} from '@angular/forms';
 
 @Component({
   standalone: true,
   selector: 'app-admin-dashboard',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],
 })
@@ -15,7 +21,9 @@ export class AdminDashboardComponent implements OnInit {
   users: any[] = [];
   plans: any[] = [];
 
-  activeTab: 'USERS' | 'PLANS' = 'PLANS';
+  userSearchTerm = '';
+  planSearchTerm = '';
+  activeTab: 'USERS' | 'PLANS' = 'USERS';
 
   // Track visibility and edit mode
   showUserForm = false;
@@ -29,13 +37,22 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     private userService: AdminUserService,
     private planService: AdminPlanService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.activeTab = 'USERS'; // ← Force default
     this.initForms();
+
+    // Load data with change detection
     this.loadUsers();
     this.loadPlans();
+
+    // Force template update after data loads
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    }, 0);
   }
 
   initForms() {
@@ -89,6 +106,21 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
+  // ← New: filter methods
+  get filteredUsers() {
+    if (!this.userSearchTerm) return this.users;
+    return this.users.filter((u) =>
+      u.email.toLowerCase().includes(this.userSearchTerm.toLowerCase())
+    );
+  }
+
+  get filteredPlans() {
+    if (!this.planSearchTerm) return this.plans;
+    return this.plans.filter((p) =>
+      p.name.toLowerCase().includes(this.planSearchTerm.toLowerCase())
+    );
+  }
+
   finalizeUserAction() {
     this.showUserForm = false;
     this.loadUsers();
@@ -125,12 +157,32 @@ export class AdminDashboardComponent implements OnInit {
     this.loadPlans();
   }
 
-  // Common Loaders
   loadUsers() {
-    this.userService.getUsers().subscribe((res) => (this.users = res));
+    this.userService.getUsers().subscribe({
+      next: (res) => {
+        this.users = res || []; // Ensure array even if empty
+        this.cdr.detectChanges(); // ← Force UI update
+      },
+      error: (err) => {
+        console.error('Failed to load users:', err);
+        this.users = []; // Empty array on error
+        this.cdr.detectChanges();
+      },
+    });
   }
+
   loadPlans() {
-    this.planService.getPlans().subscribe((res) => (this.plans = res));
+    this.planService.getPlans().subscribe({
+      next: (res) => {
+        this.plans = res || [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to load plans:', err);
+        this.plans = [];
+        this.cdr.detectChanges();
+      },
+    });
   }
   deleteUser(id: number) {
     this.userService.deleteUser(id).subscribe(() => this.loadUsers());
