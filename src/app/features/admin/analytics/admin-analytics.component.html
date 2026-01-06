@@ -1,0 +1,136 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>Platform Overview</h1>
+      <p>Monitor users, claims, and insurance plans performance.</p>
+    </div>
+    <button class="refresh-btn" (click)="loadAnalytics()" [class.spinning]="loading()">
+      <span class="icon">↻</span> Refresh Data
+    </button>
+  </header>
+
+  @if (loading()) {
+  <div class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Analyzing data...</p>
+  </div>
+  } @else {
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon customer">👥</div>
+      <div class="stat-info">
+        <label>Total Customers</label>
+        <span class="value">{{ totalCustomers() }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon agent">🛡️</div>
+      <div class="stat-info">
+        <label>Insurance Agents</label>
+        <span class="value">{{ totalAgents() }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon hospital">🏥</div>
+      <div class="stat-info">
+        <label>Hospitals</label>
+        <span class="value">{{ totalHospitals() }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon officer">⚖️</div>
+      <div class="stat-info">
+        <label>Claims Officers</label>
+        <span class="value">{{ totalOfficers() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="charts-container">
+    <div class="chart-card main-chart">
+      <h3>User Distribution</h3>
+      <div class="canvas-wrapper">
+        <canvas #userChart width="300" height="300"></canvas>
+        <div class="chart-legend">
+          <div class="legend-item"><span class="dot customer"></span> Customers</div>
+          <div class="legend-item"><span class="dot agent"></span> Agents</div>
+          <div class="legend-item"><span class="dot hospital"></span> Hospitals</div>
+          <div class="legend-item"><span class="dot officer"></span> Officers</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card bar-chart">
+      <h3>Claims Settlement Status</h3>
+      <div class="canvas-wrapper">
+        <canvas #claimsChart width="300" height="200"></canvas>
+      </div>
+      <div class="claims-summary">
+        <div class="sum-item">
+          <strong>{{ data()?.claimsStatus?.approved }}</strong> Approved
+        </div>
+        <div class="sum-item">
+          <strong>{{ data()?.claimsStatus?.pending }}</strong> Pending
+        </div>
+        <div class="sum-item">
+          <strong>{{ data()?.claimsStatus?.rejected }}</strong> Rejected
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plans Section -->
+  <div class="plans-section">
+    <div class="section-header">
+      <div class="title-group">
+        <h2>Plan Comparison Matrix</h2>
+        <p>Comparing premium costs vs. coverage duration</p>
+      </div>
+      <span class="badge">{{ plansList().length }} Total Plans</span>
+    </div>
+
+    <div class="plans-comparison-grid">
+      <!-- Header Row (Hidden on mobile, visible on desktop) -->
+      <div class="grid-header">
+        <span>Insurance Plan</span>
+        <span>Category</span>
+        <span class="text-right">Premium (Money)</span>
+        <span class="text-right">Policy Term (Time)</span>
+      </div>
+
+      @for (plan of data()?.plans; track plan.id) {
+      <div class="plan-comparison-row">
+        <div class="plan-main-info">
+          <div class="plan-avatar">{{ plan.name[0] }}</div>
+          <div class="plan-name-wrap">
+            <span class="plan-title">{{ plan.name }}</span>
+            
+          </div>
+        </div>
+
+        <div class="plan-category-cell">
+          <span class="category-tag">{{ plan.category }}</span>
+        </div>
+
+        <div class="plan-metric money">
+          <span class="currency">₹</span>
+          <span class="amount">{{ plan.price | number }}</span>
+          <small>/ premium</small>
+        </div>
+
+        <div class="plan-metric time">
+          <span class="duration">{{ plan.duration }}</span>
+          <span class="unit">Years</span>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="(plan.duration / 30) * 100"></div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>

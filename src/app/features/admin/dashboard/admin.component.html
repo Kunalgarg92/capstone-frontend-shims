@@ -47,31 +47,33 @@
       </div>
     </form>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let u of users">
-          <td>{{ u.email }}</td>
-          <td>{{ u.role }}</td>
-          <td>
-            <span class="badge" [class.active]="u.active">{{
-              u.active ? 'Active' : 'Inactive'
-            }}</span>
-          </td>
-          <td class="action-btns">
-            <button class="edit-btn" (click)="openUserForm(u)">Edit</button>
-            <button class="danger" (click)="deleteUser(u.id)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of users">
+            <td>{{ u.email }}</td>
+            <td>{{ u.role }}</td>
+            <td>
+              <span class="badge" [class.active]="u.active">{{
+                u.active ? 'Active' : 'Inactive'
+              }}</span>
+            </td>
+            <td class="action-btns">
+              <button class="edit-btn" (click)="openUserForm(u)">Edit</button>
+              <button class="danger" (click)="deleteUser(u.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- PLANS SECTION -->
@@ -97,28 +99,30 @@
       </div>
     </form>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Premium</th>
-          <th>Coverage</th>
-          <th>Duration</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let p of plans">
-          <td>{{ p.name }}</td>
-          <td>{{ p.premiumAmount | currency : 'INR' }}</td>
-          <td>{{ p.coverageLimit | currency : 'INR' }}</td>
-          <td>{{ p.durationYears }} yrs</td>
-          <td class="action-btns">
-            <button class="edit-btn" (click)="openPlanForm(p)">Edit</button>
-            <button class="danger" (click)="deletePlan(p.id)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Premium</th>
+            <th>Coverage</th>
+            <th>Duration</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of plans">
+            <td>{{ p.name }}</td>
+            <td>{{ p.premiumAmount | currency : 'INR' }}</td>
+            <td>{{ p.coverageLimit | currency : 'INR' }}</td>
+            <td>{{ p.durationYears }} yrs</td>
+            <td class="action-btns">
+              <button class="edit-btn" (click)="openPlanForm(p)">Edit</button>
+              <button class="danger" (click)="deletePlan(p.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
