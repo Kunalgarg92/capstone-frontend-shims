@@ -1,93 +1,184 @@
 <div class="agent-container">
-  <div *ngIf="message.text" class="alert" [ngClass]="message.type">{{ message.text }}</div>
+  <!-- Success/Error Alerts -->
+  <div *ngIf="message.text" class="alert" [ngClass]="message.type">
+    {{ message.text }}
+  </div>
+
+  <div class="dashboard-header">
+    <div class="header-left">
+      <h1>👥 Customer Management Dashboard</h1>
+      <p>Manage policies and enroll customers in health plans</p>
+    </div>
+    <div class="header-stats">
+      <div class="stat-card">
+        <span class="stat-number">{{ customers().length }}</span>
+        <span class="stat-label">Active Customers</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ userPolicies.length }}</span>
+        <span class="stat-label">Total Policies</span>
+      </div>
+    </div>
+  </div>
 
   <div class="dashboard-layout">
-    <!-- 1. Left: Customer Selection -->
-    <div class="sidebar card">
-      <div class="card-header"><h3>Select Customer</h3></div>
-      <div class="user-list">
-        <!-- Use the signal with brackets () -->
+    <!-- LEFT: Professional Customer Selector -->
+    <div class="customer-panel">
+      <div class="panel-header">
+        <h3>📋 Select Customer</h3>
+        <span class="customer-count">{{ customers().length }} customers</span>
+      </div>
+
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="🔍 Search customers..."
+          [(ngModel)]="searchTerm"
+          (input)="filterCustomers()"
+          class="search-input"
+        />
+      </div>
+
+      <!-- Scrollable Customer List -->
+      <div class="customer-list">
         <div
-          *ngFor="let c of customers()"
-          class="user-item"
+          *ngFor="let c of filteredCustomers()"
+          class="customer-item"
           [class.active]="selectedCustomer?.id === c.id"
           (click)="selectCustomer(c)"
         >
-          <strong>{{ c.email }}</strong>
-          <small>ID: {{ c.id }}</small>
+          <div class="customer-avatar">{{ getInitials(c.email) }}</div>
+          <div class="customer-info">
+            <div class="customer-name">{{ c.email }}</div>
+            <div class="customer-id">ID: {{ c.id }}</div>
+          </div>
+          <div class="customer-status">
+            <span class="status-dot active"></span>
+            <span class="status-text">Active</span>
+          </div>
+        </div>
+
+        <!-- Loading Skeleton -->
+        <div *ngIf="isLoadingCustomers" class="skeleton-list">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Main Content -->
+    <div class="main-content">
+      <!-- LOADING SCREEN - Professional -->
+      <div *ngIf="!selectedCustomer && !isLoadingCustomers" class="welcome-screen">
+        <div class="welcome-icon">🚀</div>
+        <h2>Welcome to Customer Dashboard</h2>
+        <p>Select a customer from the left panel to view their policies and available plans</p>
+        <div class="quick-actions">
+          <button class="btn-quick" (click)="loadSampleCustomer()">👤 Load Sample Customer</button>
         </div>
       </div>
 
-      <!-- For count, use brackets too -->
-      <span>{{ customers().length }} Active Customers</span>
-    </div>
+      <!-- Customer Selected Content -->
+      <div *ngIf="selectedCustomer">
+        <!-- Policies Section -->
+        <section class="policy-section">
+          <div class="section-header">
+            <h2>📄 Active Policies for {{ selectedCustomer.email }}</h2>
+            <span class="section-badge">{{ userPolicies.length }} Policies</span>
+          </div>
 
-    <!-- 2. Right: Action Area -->
-    <div class="main-content" *ngIf="selectedCustomer">
-      <!-- Existing Policies Section -->
-      <section class="section">
-        <div class="section-header">
-          <h2>Active Policies for {{ selectedCustomer.email }}</h2>
-        </div>
+          <div class="policy-grid" *ngIf="userPolicies.length > 0; else noPolicies">
+            <div
+              *ngFor="let pol of userPolicies"
+              class="policy-card"
+              [ngClass]="pol.status?.toLowerCase()"
+            >
+              <div class="policy-header">
+                <div class="policy-badge" [ngClass]="pol.status?.toLowerCase()">
+                  {{ pol.status }}
+                </div>
+                <div class="policy-icon">🛡️</div>
+              </div>
 
-        <div class="policy-grid" *ngIf="userPolicies.length > 0; else noPolicies">
-          <div
-            *ngFor="let pol of userPolicies"
-            class="policy-card shadow"
-            [ngClass]="pol.status.toLowerCase()"
-          >
-            <div class="pol-badge">{{ pol.status }}</div>
-            <h3>{{ pol.plan.name }}</h3>
-            <div class="dates">
-              <span><strong>Start:</strong> {{ pol.startDate }}</span>
-              <span><strong>End:</strong> {{ pol.endDate }}</span>
-            </div>
-            <div class="pol-actions">
-              <!-- Show Suspend only for ACTIVE -->
-              <button *ngIf="pol.status === 'ACTIVE'" class="btn-suspend" (click)="suspend(pol)">
-                Suspend
-              </button>
+              <div class="policy-details">
+                <h3>{{ pol.plan?.name || 'Health Plan' }}</h3>
+                <div class="policy-meta">
+                  <span class="meta-item">
+                    <strong>Start:</strong> {{ pol.startDate | date : 'short' }}
+                  </span>
+                  <span class="meta-item">
+                    <strong>End:</strong> {{ pol.endDate | date : 'short' }}
+                  </span>
+                  <span class="meta-item coverage">
+                    Coverage: ₹{{ pol.plan?.coverageLimit | number }}
+                  </span>
+                </div>
+              </div>
 
-              <!-- Show Renew ONLY for EXPIRED (Based on your backend error) -->
-              <button *ngIf="pol.status === 'EXPIRED'" class="btn-renew" (click)="renew(pol)">
-                Renew Now
-              </button>
+              <div class="policy-actions">
+                <button
+                  *ngIf="pol.status === 'ACTIVE'"
+                  class="btn-action btn-suspend"
+                  (click)="suspend(pol)"
+                >
+                  ⏸️ Suspend
+                </button>
 
-              <!-- If it's SUSPENDED, show a warning or a different action -->
-              <span *ngIf="pol.status === 'SUSPENDED'" class="status-note">
-                Cannot renew while suspended.
-              </span>
+                <button
+                  *ngIf="pol.status === 'EXPIRED'"
+                  class="btn-action btn-renew"
+                  (click)="renew(pol)"
+                >
+                  🔄 Renew Now
+                </button>
+
+                <div *ngIf="pol.status === 'SUSPENDED'" class="status-warning">
+                  <span>⚠️ Cannot renew while suspended</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <ng-template #noPolicies
-          ><p class="empty-msg">No policies found for this user.</p></ng-template
-        >
-      </section>
 
-      <!-- Available Plans Section -->
-      <section class="section">
-        <div class="section-header"><h2>Available Plans</h2></div>
-        <div class="plan-grid">
-          <div *ngFor="let p of plans" class="plan-card">
-            <h3>{{ p.name }}</h3>
-            <p>Coverage: ₹{{ p.coverageLimit | number }}</p>
-            <p>Premium: ₹{{ p.premiumAmount | number }}</p>
+          <ng-template #noPolicies>
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <p>No policies found for this customer</p>
+            </div>
+          </ng-template>
+        </section>
 
-            <button *ngIf="!isAlreadyEnrolled(p.id)" class="btn-enroll" (click)="enroll(p.id)">
-              Enroll Customer
-            </button>
-            <button *ngIf="isAlreadyEnrolled(p.id)" class="btn-disabled" disabled>
-              Already Enrolled
-            </button>
+        <!-- Available Plans Section -->
+        <section class="plans-section">
+          <div class="section-header">
+            <h2>🛒 Available Plans</h2>
           </div>
-        </div>
-      </section>
-    </div>
 
-    <!-- Placeholder -->
-    <div class="placeholder card" *ngIf="!selectedCustomer">
-      <p>Please select a customer to manage their insurance.</p>
+          <div class="plan-grid">
+            <div *ngFor="let p of plans" class="plan-card">
+              <div class="plan-header">
+                <h3>{{ p.name }}</h3>
+                <span class="plan-badge">New</span>
+              </div>
+              <div class="plan-price">
+                <div class="price">₹{{ p.premiumAmount | number }}/year</div>
+                <div class="coverage">Coverage up to ₹{{ p.coverageLimit | number }}</div>
+              </div>
+
+              <button
+                *ngIf="!isAlreadyEnrolled(p.id)"
+                class="btn-primary btn-enroll"
+                (click)="enroll(p.id)"
+              >
+                Enroll Customer
+              </button>
+              <button *ngIf="isAlreadyEnrolled(p.id)" class="btn-secondary" disabled>
+                ✅ Already Enrolled
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
 </div>

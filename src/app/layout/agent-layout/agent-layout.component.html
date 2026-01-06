@@ -1,10 +1,41 @@
 <app-agent-header></app-agent-header>
 
-<main class="agent-content">
-  <!-- This is where the AgentDashboardComponent will load -->
-  <router-outlet></router-outlet>
-</main>
+<div class="agent-shell">
+  <!-- Sidebar -->
+  <aside class="agent-sidebar">
+    <div class="sidebar-section sidebar-user">
+      <div class="avatar">A</div>
+      <div class="info">
+        <span class="name">Agent Admin</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a>
+        <span class="icon">📈</span>
+        <span>Sales Dashboard</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-section sidebar-meta">
+      <p>SecureInsure Agent Portal</p>
+      <small>v2.4</small>
+    </div>
+  </aside>
+
+  <!-- Main content area where children routes load -->
+  <main class="agent-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>
 
 <footer class="agent-footer">
-  <p>&copy; 2026 SecureInsure Agent Portal. All rights reserved.</p>
+  <div class="footer-content">
+    <p>&copy; 2026 SecureInsure Agent Network. Partner Portal v2.4</p>
+    <div class="footer-links">
+      <span>Support: 1800-AGENT-DESK</span>
+      <span class="separator">|</span>
+      <span>Compliance Rules</span>
+    </div>
+  </div>
 </footer>

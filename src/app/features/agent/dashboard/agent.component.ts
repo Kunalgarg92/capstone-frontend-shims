@@ -1,37 +1,61 @@
-import { Component, OnInit, inject } from '@angular/core'; // 1. Add inject
+import { Component, OnInit, inject, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AgentService } from '../services/agent.service';
 
 @Component({
   standalone: true,
   selector: 'app-agent-dashboard',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss'],
 })
 export class AgentDashboardComponent implements OnInit {
-  // 2. Use inject() instead of the constructor
   private agentService = inject(AgentService);
 
-  // 3. Now this line will work perfectly!
   customers = this.agentService.customersSignal;
-
   plans: any[] = [];
   userPolicies: any[] = [];
   selectedCustomer: any = null;
   loading = false;
   message = { text: '', type: '' };
 
-  // 4. Empty constructor (or remove it if not needed for anything else)
+  // EXACTLY what you asked for
+  searchTerm = '';
+  filteredCustomers = signal<any[]>([]);
+  isLoadingCustomers = false;
+
   constructor() {}
 
   ngOnInit(): void {
     this.agentService.loadCustomers();
     this.loadPlans();
+    // Initialize filtered customers
+    this.filteredCustomers.set([]);
   }
 
   loadPlans() {
     this.agentService.getPlans().subscribe((res: any[]) => (this.plans = res));
+  }
+
+  // EXACTLY what you asked for
+  getInitials(email: string): string {
+    return email.charAt(0).toUpperCase();
+  }
+
+  // EXACTLY what you asked for
+  filterCustomers() {
+    const term = this.searchTerm.toLowerCase();
+    this.filteredCustomers.set(
+      this.customers().filter((c) => c.email.toLowerCase().includes(term))
+    );
+  }
+
+  // EXACTLY what you asked for
+  loadSampleCustomer() {
+    if (this.customers().length > 0) {
+      this.selectCustomer(this.customers()[0]);
+    }
   }
 
   selectCustomer(customer: any) {
@@ -64,18 +88,18 @@ export class AgentDashboardComponent implements OnInit {
   }
 
   renew(policy: any) {
-  this.agentService.renewPolicy(policy.id, policy.userId, policy.plan.id).subscribe({
-    next: () => {
-      this.showFeedback('Policy Renewed successfully', 'success');
-      this.selectCustomer(this.selectedCustomer);
-    },
-    error: (err) => {
-      const errorMessage = err.error?.message || 'Renewal failed';
-      this.showFeedback(`Error: ${errorMessage}`, 'error');
-      console.error('Backend Conflict:', err);
-    }
-  });
-}
+    this.agentService.renewPolicy(policy.id, policy.userId, policy.plan.id).subscribe({
+      next: () => {
+        this.showFeedback('Policy Renewed successfully', 'success');
+        this.selectCustomer(this.selectedCustomer);
+      },
+      error: (err) => {
+        const errorMessage = err.error?.message || 'Renewal failed';
+        this.showFeedback(`Error: ${errorMessage}`, 'error');
+        console.error('Backend Conflict:', err);
+      },
+    });
+  }
 
   showFeedback(text: string, type: string) {
     this.message = { text, type };
