@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ClaimsOfficerHeaderComponent } from './claims-officer-header.component';
+import { ClaimsHeaderComponent } from './claims-officer-header.component';
 
 @Component({
   standalone: true,
-  selector: 'app-claims-officer-layout',
-  imports: [CommonModule, RouterOutlet, ClaimsOfficerHeaderComponent],
+  selector: 'app-claims-layout',
+  imports: [CommonModule, RouterOutlet, ClaimsHeaderComponent, RouterModule],
   templateUrl: './claims-officer-layout.component.html',
   styleUrls: ['./claims-officer-layout.component.scss'],
 })
-export class ClaimsOfficerLayoutComponent {}
+export class ClaimsLayoutComponent {}

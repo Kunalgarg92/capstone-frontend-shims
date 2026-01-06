@@ -2,50 +2,62 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 2rem;
-  background-color: #1e293b;
+  padding: 0.8rem 2.5rem;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   color: white;
-  height: 60px; // Fixed height helps calculations
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
   .left {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
+
     .logo {
-      font-weight: bold;
-      font-size: 1.2rem;
-      color: #3b82f6;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: #10b981;
+      letter-spacing: -0.5px;
     }
+
     .role {
       font-size: 0.75rem;
-      background: #334155;
-      padding: 2px 8px;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: #1e293b;
+      color: #94a3b8;
+      padding: 3px 10px;
       border-radius: 4px;
+      border: 1px solid #334155;
     }
   }
 
-  .nav-links {
+  .right {
     display: flex;
+    align-items: center;
     gap: 20px;
-    a {
+
+    .agent-name {
+      font-size: 0.85rem;
       color: #cbd5e1;
-      text-decoration: none;
-      &.active {
-        color: white;
-        font-weight: bold;
-        border-bottom: 2px solid #3b82f6;
-      }
+      padding-right: 20px;
+      border-right: 1px solid #334155;
     }
   }
 
   .logout-btn {
-    background: #ef4444;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
+    background: transparent;
+    color: #f87171;
+    border: 1px solid #7f1d1d;
+    padding: 6px 16px;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: 0.2s;
+
+    &:hover {
+      background: #7f1d1d;
+      color: white;
+    }
   }
 }

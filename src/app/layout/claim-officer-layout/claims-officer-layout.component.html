@@ -1,11 +1,41 @@
-<div class="layout-container">
-  <app-claims-officer-header></app-claims-officer-header>
+<app-claims-header></app-claims-header>
 
-  <main class="claims-content">
+<div class="claims-shell">
+  <!-- Sidebar - ONLY DASHBOARD as requested -->
+  <aside class="claims-sidebar">
+    <div class="sidebar-section sidebar-user">
+      <div class="avatar">C</div>
+      <div class="info">
+        <span class="name">Claims Officer</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a>
+        <span class="icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-section sidebar-meta">
+      <p>SecureInsure Claims Portal</p>
+      <small>v2.4</small>
+    </div>
+  </aside>
+
+  <!-- Main content area -->
+  <main class="claims-main">
     <router-outlet></router-outlet>
   </main>
-
-  <footer class="claims-footer">
-    <p>&copy; 2026 SecureInsure Claims Portal. All rights reserved.</p>
-  </footer>
 </div>
+
+<footer class="claims-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 SecureInsure Claims Network. Officer Portal v2.4</p>
+    <div class="footer-links">
+      <span>Support: 1800-CLAIMS-HELP</span>
+      <span class="separator">|</span>
+      <span>Compliance Rules</span>
+    </div>
+  </div>
+</footer>

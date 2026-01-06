@@ -4,13 +4,14 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
-  selector: 'app-claims-officer-header',
-  imports: [CommonModule, RouterModule],
+  selector: 'app-claims-header',
+  imports: [CommonModule],
   templateUrl: './claims-officer-header.component.html',
   styleUrls: ['./claims-officer-header.component.scss'],
 })
-export class ClaimsOfficerHeaderComponent {
+export class ClaimsHeaderComponent {
   constructor(private router: Router) {}
+
   logout() {
     localStorage.clear();
     this.router.navigate(['/auth/login']);
