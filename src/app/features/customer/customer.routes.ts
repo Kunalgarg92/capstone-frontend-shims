@@ -10,3 +10,4 @@ export const CUSTOMER_ROUTES: Routes = [
     data: { roles: ['CUSTOMER'] },
   },
 ];
+

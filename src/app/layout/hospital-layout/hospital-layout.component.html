@@ -1,8 +1,42 @@
 <app-hospital-header></app-hospital-header>
 
-<main class="hospital-content">
-  <router-outlet></router-outlet>
-</main>
+<div class="hospital-shell">
+  <!-- Sidebar -->
+  <aside class="hospital-sidebar">
+    <div class="sidebar-section sidebar-user">
+      <div class="avatar">H</div>
+      <div class="info">
+        <span class="name">Hospital Admin</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a
+        routerLink="/hospital/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <span class="icon">🏥</span>
+        <span>Claim Dashboard</span>
+      </a>
+
+      <a routerLink="/hospital/history" routerLinkActive="active">
+        <span class="icon">📋</span>
+        <span>Submission History</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-section sidebar-meta">
+      <p>SecureInsure Hospital Portal</p>
+      <small>v2.4</small>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="hospital-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>
 
 <footer class="hospital-footer">
   <div class="footer-content">

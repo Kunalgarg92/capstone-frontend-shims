@@ -116,11 +116,11 @@ export class HospitalDashboardComponent implements OnInit {
   }
 
   // Helper for status styling
-  getStatusClass(status: string) {
-    return {
-      'status-submitted': status === 'SUBMITTED',
-      'status-approved': status === 'APPROVED',
-      'status-rejected': status === 'REJECTED',
-    };
-  }
+  // getStatusClass(status: string) {
+  //   return {
+  //     'status-submitted': status === 'SUBMITTED',
+  //     'status-approved': status === 'APPROVED',
+  //     'status-rejected': status === 'REJECTED',
+  //   };
+  // }
 }

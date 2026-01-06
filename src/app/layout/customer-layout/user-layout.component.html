@@ -1,0 +1,44 @@
+<app-customer-header></app-customer-header>
+
+<div class="customer-shell">
+  <!-- Sidebar -->
+  <aside class="customer-sidebar">
+    <div class="sidebar-section sidebar-user">
+      <div class="avatar">C</div>
+      <div class="info">
+        <span class="name">Customer Account</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <!-- Only Dashboard link as requested -->
+      <a
+    
+      >
+        <span class="icon">📊</span>
+        <span>My Dashboard</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-section sidebar-meta">
+      <p>SecureInsure Customer Portal</p>
+      <small>v2.4</small>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="customer-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<footer class="customer-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 SecureInsure. Customer Portal v2.4</p>
+    <div class="footer-links">
+      <span>Support: 1800-INSURE-HELP</span>
+      <span class="separator">|</span>
+      <span>Privacy Policy</span>
+    </div>
+  </div>
+</footer>

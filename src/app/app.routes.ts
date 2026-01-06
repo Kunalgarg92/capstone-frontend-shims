@@ -4,7 +4,7 @@ import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.compone
 import { AgentLayoutComponent } from './layout/agent-layout/agent-layout.component';
 import { HospitalLayoutComponent } from './layout/hospital-layout/hospital-layout.component';
 import { ClaimsOfficerLayoutComponent } from './layout/claim-officer-layout/claims-officer-layout.component';
-
+import { CustomerLayoutComponent } from './layout/customer-layout/user-layout.component';
 export const routes: Routes = [
   {
     path: '',
@@ -19,6 +19,9 @@ export const routes: Routes = [
   },
   {
     path: 'customer',
+    component: CustomerLayoutComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['CUSTOMER'] },
     loadChildren: () =>
       import('./features/customer/customer.routes').then((m) => m.CUSTOMER_ROUTES),
   },
