@@ -79,7 +79,9 @@
             <td>{{ p.startDate | date }}</td>
             <td><span class="status-pill status-active">Active</span></td>
             <td>
-              <button class="btn-claim" (click)="openClaimForm(p)">File New Claim</button>
+              <button class="btn-claim" (click)="openClaimForm(p); $event.stopPropagation()">
+                File New Claim
+              </button>
             </td>
           </tr>
         </tbody>
